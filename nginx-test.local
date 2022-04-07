@@ -1,0 +1,26 @@
+server {
+    listen 80;
+    listen [::]:80;
+
+    server_name  nginx-test.local www.nginx-test.local;
+    root   /var/www/test-app;
+    index  index.html;
+    
+    access_log /var/log/nginx/nginx-test.com.access.log;
+    error_log /var/log/nginx/nginx-test.com.error.log;
+
+    client_max_body_size 100M;
+  
+    autoindex off;
+
+    location / {
+    try_files $uri $uri/ /index.php$is_args$args;
+      }
+
+    location ~ \.php$ {
+         include snippets/fastcgi-php.conf;
+         fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;
+         include fastcgi_params;
+         fastcgi_intercept_errors on;
+    }
+}
